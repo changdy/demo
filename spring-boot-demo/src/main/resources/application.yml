@@ -1,0 +1,30 @@
+server:
+  port: 17676
+spring:
+  redis:
+    database: 0
+    host: 192.168.2.233
+    password: redispwd
+    port: 6379
+  datasource:
+    url: jdbc:postgresql://192.168.2.233:5432/smzdm
+    driver-class-name: com.mysql.jdbc.Driver
+    username: postgres
+    password: rootpwd
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-handlers-package: com.smzdm.typehandler
+logging:
+  level:
+    root: info
+    com.ibatis: TRACE
+    com.smzdm: debug
+    org.springframework.web.filter.CommonsRequestLoggingFilter: debug
+redis-config:
+  expired-topic: __keyevent@0__:expired
+  channel: chat
+  core-pool-size: 10
+  max-pool-size: 20
+  queue-capacity: 100
+  keep-alive-seconds: 60
+  thread-name-prefix: Redis
