@@ -8,9 +8,10 @@ spring:
     port: 6379
   datasource:
     url: jdbc:postgresql://192.168.2.233:5432/smzdm
-    driver-class-name: com.mysql.jdbc.Driver
     username: postgres
     password: rootpwd
+  jackson:
+    default-property-inclusion: non_null
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-handlers-package: com.smzdm.typehandler
