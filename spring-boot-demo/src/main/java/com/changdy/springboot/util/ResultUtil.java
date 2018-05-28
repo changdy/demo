@@ -2,7 +2,7 @@ package com.changdy.springboot.util;
 
 
 import com.changdy.springboot.enums.ResultEnums;
-import com.changdy.springboot.pojo.model.ResponseResult;
+import com.changdy.springboot.model.ResponseResult;
 
 public class ResultUtil {
 
