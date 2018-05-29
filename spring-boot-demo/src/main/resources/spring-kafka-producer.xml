@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
-       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/integration/kafka http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
-		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
-    <int:channel id="inputToKafka">
-        <int:queue/>
-    </int:channel>
-    <int-kafka:outbound-channel-adapter id="kafkaOutboundChannelAdapter" kafka-producer-context-ref="kafkaProducerContext" auto-startup="false"
-                                        channel="inputToKafka" order="3">
-        <int:poller fixed-delay="1000" time-unit="MILLISECONDS" receive-timeout="0" task-executor="taskExecutor"/>
-    </int-kafka:outbound-channel-adapter>
-    <task:executor id="taskExecutor" pool-size="5" keep-alive="120" queue-capacity="500"/>
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="stringSerializer" class="org.apache.kafka.common.serialization.StringSerializer"/>
     <bean id="producerProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
@@ -26,8 +17,17 @@
             </props>
         </property>
     </bean>
-    <int-kafka:producer-context id="kafkaProducerContext" producer-properties="producerProperties">
+    <int:channel id="kafkaTopicChannel">
+        <int:queue/>
+    </int:channel>
+
+    <int-kafka:outbound-channel-adapter id="kafkaOutboundChannelAdapterTopicTest" kafka-producer-context-ref="producerContextConfig" auto-startup="true"
+                                        channel="kafkaTopicChannel" order="3">
+        <int:poller fixed-delay="1000" time-unit="MILLISECONDS" receive-timeout="1"/>
+    </int-kafka:outbound-channel-adapter>
+    <int-kafka:producer-context id="producerContextConfig" producer-properties="producerProperties">
         <int-kafka:producer-configurations>
+            <!-- 多个topic配置 -->
             <int-kafka:producer-configuration broker-list="192.168.51.135:9092" key-serializer="stringSerializer" value-class-type="java.lang.String"
                                               value-serializer="stringSerializer" topic="wshuttle-wsccc"/>
         </int-kafka:producer-configurations>
