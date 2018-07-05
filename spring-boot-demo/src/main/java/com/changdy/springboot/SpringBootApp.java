@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan("com.changdy.springboot.mapper")
-@ImportResource(locations={"classpath:spring-kafka-consumer.xml","classpath:spring-kafka-producer.xml"})
+//@ImportResource(locations={"classpath:spring-kafka-consumer.xml","classpath:spring-kafka-producer.xml"})
 public class SpringBootApp {
 
     public static void main(String[] args) {
