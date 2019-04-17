@@ -47,29 +47,6 @@ public class RegisterBean {
     @Autowired
     private RedisConnectionFactory connectionFactory;
 
-
-    @Autowired
-    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
-
-    @PostConstruct
-    public void registerModule() {
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
-            @Override
-            public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                gen.writeNumber(Timestamp.valueOf(value).getTime());
-            }
-        });
-        module.addDeserializer(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
-            @Override
-            public LocalDateTime deserialize(JsonParser p, DeserializationContext context) throws IOException {
-                Instant instant = Instant.ofEpochMilli(p.getLongValue());
-                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            }
-        });
-        mappingJackson2HttpMessageConverter.getObjectMapper().registerModule(module);
-    }
-
     @Bean
     public DateTimeFormatter dateTimeFormatter() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
