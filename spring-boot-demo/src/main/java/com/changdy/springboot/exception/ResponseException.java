@@ -18,7 +18,7 @@ public class ResponseException extends RuntimeException {
     }
 
     // 增加格式化
-    public ResponseException(ResultEnums resultEnums, Object ... arguments) {
+    public ResponseException(ResultEnums resultEnums, Object... arguments) {
         super(MessageFormat.format(resultEnums.getMsg(), arguments));
         this.code = resultEnums.getCode();
     }

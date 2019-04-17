@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.integration.kafka.support.KafkaHeaders;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.integration.support.MessageBuilder;
 
 import java.time.LocalTime;
 
@@ -21,7 +21,6 @@ public class MessageSender {
     private RedisConfig redisConfig;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
     @Autowired
     private MessageChannel kafkaTopicChannel;
 
