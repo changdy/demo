@@ -30,3 +30,9 @@ redis-config:
   queue-capacity: 100
   keep-alive-seconds: 60
   thread-name-prefix: Redis
+#  这个是swagger的默认host
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: "test-wti.saa.com.cn:9003/wti"
