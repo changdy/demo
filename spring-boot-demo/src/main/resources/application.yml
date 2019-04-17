@@ -35,4 +35,4 @@ springfox:
   documentation:
     swagger:
       v2:
-        host: "test-wti.saa.com.cn:9003/wti"
+        host: "test.hello.com:9003/wti"
