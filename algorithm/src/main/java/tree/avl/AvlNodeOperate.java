@@ -1,11 +1,16 @@
 package tree.avl;
 
+import tree.base.BaseOperateUtil;
+
 import java.util.Objects;
+
+import static tree.base.BaseOperateUtil.nodeReplace;
 
 /**
  * Created by Changdy on 2019/5/19.
  */
 public class AvlNodeOperate {
+
     public static AvlNode initNewTree(int value) {
         return new AvlNode(value);
     }
@@ -26,7 +31,7 @@ public class AvlNodeOperate {
             return rootNode;
         }
         // 找到位置
-        AvlNode parentNode = findParentNode(rootNode, null, value);
+        AvlNode parentNode = BaseOperateUtil.findParentNode(rootNode, null, value);
         newNode = new AvlNode(value, parentNode);
         if (parentNode.getValue() > value) {
             parentNode.setLeftChild(newNode);
@@ -84,13 +89,7 @@ public class AvlNodeOperate {
             currentNode.setLeftDepth(currentNode.getRightDepth());
             currentNode.setLeftChild(grandSon);
             currentNode.setParentNode(leftChild);
-            if (currentNodeIsRoot) {
-                return leftChild;
-            } else {
-                leftChild.setParentNode(parentNode);
-                nodeReplace(parentNode, currentNode, leftChild);
-                return rootNode;
-            }
+            return getResult(currentNodeIsRoot, leftChild, currentNode, parentNode, rootNode);
         } else {
             AvlNode temp = grandSon.getLeftChild();
             // 步骤1
@@ -143,13 +142,7 @@ public class AvlNodeOperate {
             currentNode.setRightDepth(currentNode.getLeftDepth());
             currentNode.setRightChild(grandSon);
             currentNode.setParentNode(rightChild);
-            if (currentNodeIsRoot) {
-                return rightChild;
-            } else {
-                rightChild.setParentNode(parentNode);
-                nodeReplace(parentNode, currentNode, rightChild);
-                return rootNode;
-            }
+            return getResult(currentNodeIsRoot, rightChild, currentNode, parentNode, rootNode);
         } else {
             AvlNode temp = grandSon.getRightChild();
             // 步骤1
@@ -186,23 +179,13 @@ public class AvlNodeOperate {
         }
     }
 
-    private static void nodeReplace(AvlNode parentNode, AvlNode oldNode, AvlNode newNode) {
-        if (Objects.equals(parentNode.getLeftChild(), oldNode)) {
-            parentNode.setLeftChild(newNode);
+    private static AvlNode getResult(boolean currentNodeIsRoot, AvlNode child, AvlNode currentNode, AvlNode parentNode, AvlNode rootNode) {
+        if (currentNodeIsRoot) {
+            return child;
         } else {
-            parentNode.setRightChild(newNode);
+            child.setParentNode(parentNode);
+            nodeReplace(parentNode, currentNode, child);
+            return rootNode;
         }
-    }
-
-
-    public static AvlNode findParentNode(AvlNode current, AvlNode parent, int value) {
-        if (current == null) {
-            return parent;
-        }
-        int currentValue = current.getValue();
-        if (currentValue == value) {
-            throw new RuntimeException("发现重复");
-        }
-        return currentValue > value ? findParentNode(current.getLeftChild(), current, value) : findParentNode(current.getRightChild(), current, value);
     }
 }

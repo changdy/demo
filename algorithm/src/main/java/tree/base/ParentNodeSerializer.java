@@ -1,4 +1,4 @@
-package tree.avl;
+package tree.base;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
@@ -18,6 +18,6 @@ public class ParentNodeSerializer implements ObjectSerializer {
             out.writeNull();
             return;
         }
-        out.writeInt(((AvlNode) object).getValue());
+        out.writeInt(((BaseNode) object).getValue());
     }
 }

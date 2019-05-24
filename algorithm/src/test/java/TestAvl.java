@@ -1,47 +1,33 @@
+import org.junit.Test;
 import tree.avl.AvlNode;
 import tree.avl.AvlNodeOperate;
-import org.junit.Test;
+import tree.redblack.RBNode;
+import tree.redblack.RBNodeOperate;
 
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Changdy on 2019/5/19.
  */
 public class TestAvl {
     @Test
-    public void test() {
-        AvlNode avlNode = AvlNodeOperate.addValue(null, 35);
-        List<Integer> integers = Arrays.asList(25, 40, 15, 30, 45, 10, 20, 5);
-        for (Integer integer : integers) {
-            avlNode = AvlNodeOperate.addValue(avlNode, integer);
-        }
-        System.out.println(avlNode);
-    }
-
-    @Test
-    public void simpleTest() {
-        AvlNode avlNode = AvlNodeOperate.addValue(null, 35);
-        avlNode = AvlNodeOperate.addValue(avlNode, 10);
-        System.out.println(avlNode);
-    }
-
-    @Test
-    public void test2() {
+    public void testAVLTree() {
+        List<Integer> integers = Arrays.asList(44, 71, 93, 85, 23, 25, 89, 17, 97, 10, 43, 91);
         AvlNode avlNode = null;
-        Random random = new SecureRandom();
-        Set<Integer> set = new HashSet<>(50);
-        for (int i = 0; i < 50; i++) {
-            set.add(random.nextInt(99) + 1);
+        for (int i = 0; i < integers.size(); i++) {
+            avlNode = AvlNodeOperate.addValue(avlNode, integers.get(i));
         }
-        List<Integer> list = new ArrayList<>(100);
-        list.addAll(set);
-        Collections.shuffle(list);
-        System.out.println(list.toString().replaceAll(" ", "").replaceAll("\\[|\\]", ""));
-        for (Integer i : list) {
-            System.out.println(i);
-            avlNode = AvlNodeOperate.addValue(avlNode, i);
-            System.out.println(avlNode);
+        System.out.println(avlNode);
+    }
+
+    @Test
+    public void testRBTree() {
+        List<Integer> integers = Arrays.asList(44, 71, 93, 85, 23, 25, 89, 17, 97, 10, 43, 91);
+        RBNode rbNode = null;
+        for (int i = 0; i < integers.size(); i++) {
+            rbNode = RBNodeOperate.addValue(rbNode, integers.get(i));
         }
+        System.out.println(rbNode);
     }
 }
