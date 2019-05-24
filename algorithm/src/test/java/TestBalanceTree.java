@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Changdy on 2019/5/19.
  */
-public class TestAvl {
+public class TestBalanceTree {
     @Test
     public void testAVLTree() {
         List<Integer> integers = Arrays.asList(44, 71, 93, 85, 23, 25, 89, 17, 97, 10, 43, 91);
