@@ -1,12 +1,12 @@
-package calculate;
+package rpn.calculate;
 
 /**
  * Created by Changdy on 2018/7/26.
  */
-public class SubtractCalculator implements Calculator {
+public class MultiplyCalculator implements Calculator {
 
     @Override
     public float calculate(float preNumber, float postNumber) {
-        return preNumber - postNumber;
+        return preNumber * postNumber;
     }
 }

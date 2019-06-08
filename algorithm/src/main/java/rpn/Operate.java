@@ -1,36 +1,19 @@
-import calculate.Calculator;
-import calculate.CalculatorFactory;
-import pojo.OperationUnit;
+package rpn;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import rpn.calculate.Calculator;
+import rpn.calculate.CalculatorFactory;
+import rpn.pojo.OperationUnit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
 /**
- * Created by Changdy on 2018/7/25.
+ * Created by Changdy on 2019/6/8.
  */
-public class Operator {
-    // 使用js引擎校对 计算结果
-    public static void main(String[] args) throws IOException, ScriptException {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("Nashorn");
-        List<String> equations = Files.readAllLines(Paths.get("/test.txt"));
-        for (String equation : equations) {
-            float resultByJS = Float.valueOf(String.valueOf(engine.eval(equation)));
-            float myResult = getResult(convertToRPN(splitToUnit(equation)));
-            boolean b = Math.abs(myResult - resultByJS) < 0.001;
-            System.out.println(b + "\t" + String.format("%1$-14s", String.valueOf(resultByJS)) + String.format("%1$-14s", String.valueOf(myResult)));
-        }
-    }
-
+public class Operate {
     // 分析算数表达式,拆分符号和数字
-    private static List<OperationUnit> splitToUnit(String equation) {
+    public static List<OperationUnit> splitToUnit(String equation) {
         char[] chars = equation.replaceAll(" ", "").toCharArray();
         StringBuilder temp = new StringBuilder();
         List<OperationUnit> list = new ArrayList<>();
@@ -55,7 +38,7 @@ public class Operator {
     }
 
     // 完成转换后缀表达式
-    private static Stack<OperationUnit> convertToRPN(List<OperationUnit> operationUnits) {
+    public static Stack<OperationUnit> convertToRPN(List<OperationUnit> operationUnits) {
         Stack<OperationUnit> symbolStack = new Stack<>();
         Stack<OperationUnit> postfixNotation = new Stack<>();
         for (OperationUnit operationUnit : operationUnits) {
@@ -97,9 +80,9 @@ public class Operator {
         }
         return postfixNotation;
     }
-    
+
     // 计算最终结果,这一步实际上比较简单
-    private static float getResult(Stack<OperationUnit> operationUnits) {
+    public static float getResult(Stack<OperationUnit> operationUnits) {
         for (int i = 2; i < operationUnits.size(); i++) {
             OperationUnit operationUnit = operationUnits.get(i);
             if (!operationUnit.isNumber()) {

@@ -1,4 +1,4 @@
-package calculate;
+package rpn.calculate;
 
 /**
  * Created by Changdy on 2018/7/26.
