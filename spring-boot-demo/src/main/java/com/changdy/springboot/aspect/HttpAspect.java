@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
+// 考虑把这个功能放到kong 上面
 public class HttpAspect {
 
     @Pointcut("execution(public * com.changdy.springboot.controller.*.*(..))")

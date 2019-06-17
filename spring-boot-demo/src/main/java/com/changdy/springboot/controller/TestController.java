@@ -16,6 +16,8 @@ public class TestController {
     public JSONObject postOnly() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("time", LocalDateTime.now());
+        jsonObject.put("long", Long.MAX_VALUE / 15);
+        jsonObject.put("int", Integer.MAX_VALUE);
         return jsonObject;
     }
 

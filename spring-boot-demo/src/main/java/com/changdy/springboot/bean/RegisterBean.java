@@ -1,35 +1,48 @@
 package com.changdy.springboot.bean;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Changdy on 2018/4/14.
  */
+@Slf4j
 @Configuration
 public class RegisterBean {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
     @Autowired
     private RedisConfig redisConfig;
     @Autowired
     private TopicMessageListener messageListener;
-    @Autowired
-    private MessageReceiver receiver;
     @Autowired
     private RedisConnectionFactory connectionFactory;
 
@@ -45,6 +58,33 @@ public class RegisterBean {
         loggingFilter.setIncludePayload(true);
         loggingFilter.setMaxPayloadLength(5000);
         return loggingFilter;
+    }
+
+    @Bean
+    public Executor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(20);
+        executor.setQueueCapacity(100);
+        executor.setKeepAliveSeconds(60);
+        executor.setThreadNamePrefix("async");
+        return executor;
+    }
+
+    @Bean
+    public AsyncConfigurer asyncConfigurer() {
+        return new AsyncConfigurer() {
+            @Override
+            public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+                return (ex, method, params) -> {
+                    // 更正确的是应该把这次 异常信息 抛给消息队列,让消息队列入栈
+                    //exceptionMapper.insertException(ex.getClass().toString(), ex.toString(), Arrays.toString(ex.getStackTrace()), "APP", "异步线程异常");
+                    log.error("异常", ex);
+                    log.info("方法名{}", method);
+                    log.info("参数{}", params);
+                };
+            }
+        };
     }
 
 
@@ -72,24 +112,38 @@ public class RegisterBean {
         return container;
     }
 
+    @Bean("jackson2ObjectMapperBuilderCustomizer")
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
 
-    @Bean
-    RedisMessageListenerContainer container(MessageListenerAdapter messageListenerAdapter) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(messageListenerAdapter, new PatternTopic(redisConfig.getChannel()));
-        return container;
+        JsonSerializer<LocalDateTime> localDateTimeJsonSerializer = new JsonSerializer<LocalDateTime>() {
+            @Override
+            public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                gen.writeNumber(Timestamp.valueOf(value).getTime());
+            }
+        };
+        JsonDeserializer<LocalDateTime> localDateTimeJsonDeserializer = new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonParser p, DeserializationContext context) throws IOException {
+                Instant instant = Instant.ofEpochMilli(p.getLongValue());
+                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            }
+        };
+        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
+                .serializerByType(Long.class, ToStringSerializer.instance)
+                .serializerByType(LocalDateTime.class, localDateTimeJsonSerializer)
+                .deserializerByType(LocalDateTime.class, localDateTimeJsonDeserializer);
     }
 
-    /**
-     * 消息监听器适配器，绑定消息处理器，利用反射技术调用消息处理器的业务方法
-     * <p>
-     * 这个必须注册到bean里面,否则会出错
-     */
-    @Bean
-    MessageListenerAdapter messageListenerAdapter() {
-        //这个地方 是给messageListenerAdapter 传入一个消息接受的处理器，利用反射的方法调用“receiveMessage”
-        //也有好几个重载方法，这边默认调用处理器的方法 叫handleMessage 可以自己到源码里面看
-        return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
+
+    // 跨域
+    //@Bean
+    //public CorsFilter corsFilter() {
+    //    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    //    corsConfiguration.addAllowedOrigin("*");
+    //    corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
+    //    corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
+    //    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //    source.registerCorsConfiguration("/callback/oss", corsConfiguration); // 4 对接口配置跨域设置
+    //    return new CorsFilter(source);
+    //}
 }

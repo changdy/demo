@@ -18,8 +18,7 @@ public class ExceptionHandleController extends AbstractErrorController {
 
     @RequestMapping("/error")
     public Map<String, Object> handleError(HttpServletRequest request) {
-        Map<String, Object> errorAttributes = super.getErrorAttributes(request, false);
-        return errorAttributes;
+        return super.getErrorAttributes(request, false);
     }
 
     @Override
