@@ -14,6 +14,7 @@
     if (price != null && price != "") {
       if (price === "0") {
         localStorage.removeItem("itemFilter");
+        filterItem(0);
       } else {
         let tempItemp = {
           price: parseInt(price, 10),
