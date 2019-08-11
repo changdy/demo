@@ -1,6 +1,9 @@
 package com.changdy.springboot.controller;
 
+import com.changdy.springboot.model.TestBody;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +27,13 @@ public class TestController {
 
     @RequestMapping("/throw-exception")
     public String throwException() throws Exception {
+        throw new Exception();
+    }
+
+    // @Validated 与 @Valid 区别 以及一些分组的高级功能
+    // https://blog.csdn.net/littleskey/article/details/52224352
+    @RequestMapping("/test-Validated")
+    public String throwValidated(@RequestBody @Validated TestBody testBody) throws Exception {
         throw new Exception();
     }
 }
