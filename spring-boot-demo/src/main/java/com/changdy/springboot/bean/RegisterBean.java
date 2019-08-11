@@ -112,29 +112,6 @@ public class RegisterBean {
         return container;
     }
 
-    @Bean("jackson2ObjectMapperBuilderCustomizer")
-    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-
-        JsonSerializer<LocalDateTime> localDateTimeJsonSerializer = new JsonSerializer<LocalDateTime>() {
-            @Override
-            public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                gen.writeNumber(Timestamp.valueOf(value).getTime());
-            }
-        };
-        JsonDeserializer<LocalDateTime> localDateTimeJsonDeserializer = new JsonDeserializer<LocalDateTime>() {
-            @Override
-            public LocalDateTime deserialize(JsonParser p, DeserializationContext context) throws IOException {
-                Instant instant = Instant.ofEpochMilli(p.getLongValue());
-                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            }
-        };
-        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-                .serializerByType(Long.class, ToStringSerializer.instance)
-                .serializerByType(LocalDateTime.class, localDateTimeJsonSerializer)
-                .deserializerByType(LocalDateTime.class, localDateTimeJsonDeserializer);
-    }
-
-
     // 跨域
     //@Bean
     //public CorsFilter corsFilter() {

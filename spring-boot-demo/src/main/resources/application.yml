@@ -13,6 +13,10 @@ spring:
     driver-class-name: org.postgresql.Driver
   jackson:
     default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: true
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    time-zone: GMT+8
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-handlers-package: com.smzdm.typehandler
