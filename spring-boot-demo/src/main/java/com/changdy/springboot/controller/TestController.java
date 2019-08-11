@@ -1,11 +1,12 @@
 package com.changdy.springboot.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Changdy on 2018/5/29.
@@ -13,8 +14,8 @@ import java.time.LocalDateTime;
 @RestController
 public class TestController {
     @PostMapping("/post-only")
-    public JSONObject postOnly() {
-        JSONObject jsonObject = new JSONObject();
+    public Map postOnly() {
+        Map jsonObject = new HashMap();
         jsonObject.put("time", LocalDateTime.now());
         jsonObject.put("long", Long.MAX_VALUE / 15);
         jsonObject.put("int", Integer.MAX_VALUE);
