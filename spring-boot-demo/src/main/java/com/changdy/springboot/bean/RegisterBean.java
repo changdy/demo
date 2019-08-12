@@ -1,16 +1,8 @@
 package com.changdy.springboot.bean;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -19,13 +11,10 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import javax.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,6 +34,13 @@ public class RegisterBean {
     private TopicMessageListener messageListener;
     @Autowired
     private RedisConnectionFactory connectionFactory;
+    @Autowired
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+    @PostConstruct
+    public void changeBean() {
+        threadPoolTaskScheduler.setErrorHandler(x -> log.error("定时任务异常", x));
+    }
 
     @Bean
     public DateTimeFormatter dateTimeFormatter() {
