@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  对搜索进行过滤 删除无用数据
 // @author       changdy
-// @match        https://search.smzdm.com/*
+// @match        ://search.smzdm.com/*
 // @grant        none
 // ==/UserScript==
 
