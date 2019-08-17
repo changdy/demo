@@ -15,3 +15,10 @@ spring boot 多数据源
 ## [script](https://github.com/changdy/demo/tree/master/script)
 
 零零碎碎写的代码 , 大部分是油猴脚本
+
+
+## [script](https://github.com/changdy/demo/tree/master/utlis)
+
+一些用java写的工具,目前包括:
+* java反射缓存
+* easyexcel二次封装(稍微吐槽下easyexcel,代码质量真的不高)
