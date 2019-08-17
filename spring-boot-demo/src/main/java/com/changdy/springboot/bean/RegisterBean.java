@@ -115,6 +115,7 @@ public class RegisterBean {
     //    corsConfiguration.addAllowedOrigin("*");
     //    corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
     //    corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
+    //    corsConfiguration.setAllowCredentials(true);
     //    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     //    source.registerCorsConfiguration("/callback/oss", corsConfiguration); // 4 对接口配置跨域设置
     //    return new CorsFilter(source);
