@@ -26,6 +26,8 @@ logging:
     com.ibatis: TRACE
     com.smzdm: debug
     org.springframework.web.filter.CommonsRequestLoggingFilter: debug
+  file: /opt/app/logs/spring/demo.log
+  file.max-size: 200MB
 redis-config:
   expired-topic: __keyevent@0__:expired
   channel: chat
