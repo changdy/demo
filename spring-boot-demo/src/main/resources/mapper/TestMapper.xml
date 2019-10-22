@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changdy.springboot.mapper.TestResultMap">
+    <!-- 可以直接用逗号分隔 -->
+    <select id="getPlayerList" resultType="com.changdy.springboot.entity.Player">
+        SELECT u.id,
+            u.username,
+            u.password,
+            u.address,
+            u.email,
+            r.id as 'role.id',
+            r.name as 'role.name'
+        FROM USER u LEFT JOIN role r ON r.id = u.role_id
+    </select>
+    <resultMap id="baseMap" type="com.changdy.springboot.entity.Player">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="address" column="address"/>
+        <result property="email" column="email"/>
+    </resultMap>
+    <!-- 使用map映射 -->
+    <resultMap id="playerAssociationMap" type="com.changdy.springboot.entity.Player"  extends="baseMap">
+        <association property="role" javaType="com.changdy.springboot.entity.Role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+        </association>
+    </resultMap>
+
+    <select id="getPlayerWithAssociation" resultMap="playerAssociationMap">
+        SELECT u.id,
+            u.username,
+            u.password,
+            u.address,
+            u.email,
+            r.id as 'role_id',
+            r.name as 'role_name'
+        FROM USER u LEFT JOIN role r ON r.id = u.role_id
+    </select>
+    <!--  -->
+
+    <!--  1对多的映射,猜测是通过 id去重 -->
+    <resultMap id="playerCollectionMap" type="com.changdy.springboot.entity.Player"  extends="baseMap">
+<!--        JavaType和ofType都是用来指定对象类型的，但是JavaType是用来指定pojo中属性的类型，而ofType指定的是映射到list集合属性中pojo的类型。-->
+        <collection property="swords" ofType="com.changdy.springboot.entity.Sword">
+            <id property="id" column="sword_id"/>
+            <result property="name" column="sword_name"/>
+        </collection>
+    </resultMap>
+    <select id="getPlayerSwords" resultMap="playerCollectionMap">
+        SELECT u.id,
+          u.username,
+          u.password,
+          u.address,
+          u.email,
+          s.id as 'sword_id',
+          s.name as 'sword_name'
+        FROM USER u LEFT JOIN swords s ON s.player_id = u.id AND s.role_id=u.role_id
+    </select>
+
+    <select id="getPlayerSwordsSelect" resultMap="playerSelect">
+        SELECT u.id,
+            u.username,
+            u.password,
+            u.address,
+            u.role_id,
+            u.email
+        FROM USER u
+    </select>
+    <!--  1对多的映射,猜测是通过 id去重 -->
+    <resultMap id="playerSelect"  type="com.changdy.springboot.entity.Player"  extends="baseMap">
+        <association property="swords" column="{player_id=id,role_id=role_id}" select="getSwords"/>
+    </resultMap>
+    <select id="getSwords" resultType="com.changdy.springboot.entity.Sword">
+        select * from swords where player_id = #{player_id} and role_id =#{role_id}
+    </select>
+</mapper>
