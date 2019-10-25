@@ -28,6 +28,9 @@ logging:
     org.springframework.web.filter.CommonsRequestLoggingFilter: debug
   file: /opt/app/logs/spring/demo.log
   file.max-size: 200MB
+  pattern:
+    console: "${CONSOLE_LOG_PATTERN:%clr(%d{${LOG_DATEFORMAT_PATTERN:MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([%10.10t]){faint} %clr(%-60.60logger{59}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}}"
+    file: "${FILE_LOG_PATTERN:%d{${LOG_DATEFORMAT_PATTERN:MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} [%10.10t] %-60.60logger{59} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}}"
 redis-config:
   expired-topic: __keyevent@0__:expired
   channel: chat
