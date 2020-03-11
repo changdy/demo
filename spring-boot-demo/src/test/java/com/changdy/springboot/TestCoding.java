@@ -2,9 +2,15 @@ package com.changdy.springboot;
 
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -59,5 +65,14 @@ public class TestCoding {
     public void objectUtils() {
         // 对象复制
         BeanUtils.copyProperties(new Object(), new Object());
+    }
+
+    @Test
+    public void readFile() throws IOException {
+        File file = ResourceUtils.getFile("classpath:application.yml");
+        List<String> readAllLines = Files.readAllLines(Paths.get(new ClassPathResource("application.yml").getURI()));
+        for (String line : readAllLines) {
+            System.out.println(line);
+        }
     }
 }
