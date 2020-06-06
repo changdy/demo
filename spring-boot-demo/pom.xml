@@ -10,7 +10,19 @@
 
     <name>spring-boot-demo</name>
     <description>Demo project for Spring Boot</description>
-
+    <repositories>
+        <repository>
+        <id>aliyun</id>
+        <name>aliyun</name>
+        <url>https://maven.aliyun.com/repository/public</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        </repository>
+    </repositories>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
