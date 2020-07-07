@@ -1,10 +1,12 @@
 package com.changdy.springboot.bean;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -14,6 +16,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -59,8 +62,28 @@ public class RegisterBean {
         executor.setQueueCapacity(100);
         executor.setKeepAliveSeconds(60);
         executor.setThreadNamePrefix("async");
+        // 以mdc为例子传递上下文 ,还可以传递 Spring Security 之类的
+        executor.setTaskDecorator(new MdcTaskDecorator());
         return executor;
     }
+
+    public static class MdcTaskDecorator implements TaskDecorator {
+        @Override
+        public Runnable decorate(Runnable runnable) {
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            return () -> {
+                if (contextMap != null) {
+                    MDC.setContextMap(contextMap);
+                }
+                try {
+                    runnable.run();
+                } finally {
+                    MDC.clear();
+                }
+            };
+        }
+    }
+
 
     @Bean
     public AsyncConfigurer asyncConfigurer() {
