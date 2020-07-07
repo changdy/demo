@@ -36,4 +36,10 @@ public class TestController {
     public String throwValidated(@RequestBody @Validated TestBody testBody) throws Exception {
         throw new Exception();
     }
+
+    // 可以使用params 达到版本控制
+    @RequestMapping(value = "/test-Validated", params = {"apiVersion=0.2.0"})
+    public String throwValidatedNewVersion(@RequestBody @Validated TestBody testBody) throws Exception {
+        throw new Exception();
+    }
 }
